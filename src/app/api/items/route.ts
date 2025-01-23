@@ -27,4 +27,32 @@ export async function GET(request: NextRequest) {
     }
   })
 }
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
 
+    if (!body.name || !body.category || !body.price || !body.image) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    const newItem = {
+      id: items.length + 1,
+      name: body.name,
+      category: body.category,
+      price: parseFloat(body.price),
+      image: body.image,
+    }
+
+    items.push(newItem)
+
+    return NextResponse.json(newItem, { status: 201 })
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid request body' },
+      { status: 400 }
+    )
+  }
+}
